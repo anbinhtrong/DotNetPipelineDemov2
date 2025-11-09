@@ -2,7 +2,11 @@ trigger:
 - main
 
 pool:
-  vmImage: ubuntu-latest
+  vmImage: Default
+
+  demands:
+  - docker
+  - Agent.Name -equals MySelfHostedAgent-ABT
 
 variables:
   buildConfiguration: 'Release'
