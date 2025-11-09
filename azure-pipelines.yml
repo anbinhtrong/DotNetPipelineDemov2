@@ -17,9 +17,16 @@ jobs:
 
   steps:
   - script: |
-      apt-get update          # Update package list
-      apt-get install -y nodejs npm # Install Node.js and npm
-    displayName: '0. Install Node.js Dependencies'
+      echo "--- Verify Node.js Environment ---" # Start verification log
+      echo "Node Version:"
+      node --version                            # Check Node.js version
+      echo "NPM Version:"
+      npm --version                             # Check NPM version
+      echo "-----------------------------------"
+    displayName: '0. Verify Node.js and NPM'
+      #apt-get update          # Update package list
+      #apt-get install -y nodejs npm # Install Node.js and npm
+    #displayName: '0. Install Node.js Dependencies'
   - script: dotnet restore
     displayName: '1. Restore Dependencies'
     # Specify the directory containing your .csproj file
