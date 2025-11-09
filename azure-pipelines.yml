@@ -5,7 +5,6 @@ pool:
   name: Default
 
   demands:
-  - docker
   - Agent.Name -equals MySelfHostedAgent-ABT
 
 variables:
