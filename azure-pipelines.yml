@@ -13,7 +13,7 @@ variables:
 jobs:
 - job: BuildDotNetAlpine
   displayName: 'Build C# Project (Debian/Ubuntu image)'
-  container: sdk9-node:alpine
+  container: local/sdk9-node:alpine
 
   steps:
   - script: |
