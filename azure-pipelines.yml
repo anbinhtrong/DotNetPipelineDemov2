@@ -1,0 +1,56 @@
+trigger: none
+
+pool:
+  name: Default
+
+  demands:
+  - docker
+  - Agent.Name -equals MySelfHostedAgent-ABT
+
+variables:
+  buildConfiguration: 'Release'
+
+jobs:
+- job: BuildDotNetAlpine
+  displayName: 'Build C# Project (Debian/Ubuntu image)'
+  container: anbinhtrong/sdk9-node:alpine
+
+  steps:
+  - bash: |
+      echo "--- Verify Node.js Environment ---" # Start verification log
+      echo "Node Version:"
+      node --version                            # Check Node.js version
+      echo "NPM Version:"
+      npm --version                             # Check NPM version
+      echo "-----------------------------------"
+    displayName: '0. Verify Node.js and NPM'
+      #apt-get update          # Update package list
+      #apt-get install -y nodejs npm # Install Node.js and npm
+    #displayName: '0. Install Node.js Dependencies'
+  - bash: dotnet restore
+    displayName: '1. Restore Dependencies'
+    # Specify the directory containing your .csproj file
+    workingDirectory: 'HelloWorldApp'
+
+  # 2. Build the C# Application
+  - bash: dotnet build --configuration $(buildConfiguration) --no-restore
+    displayName: '2. Build Project'
+    # '--no-restore' ensures we use the packages restored in the previous step
+    workingDirectory: 'HelloWorldApp'
+    
+  # 3. Publish (Compile output files to a ready-to-deploy folder)
+  - task: DotNetCoreCLI@2
+    displayName: '3. Publish Application'
+    inputs:
+      command: 'publish'
+      publishWebProjects: false 
+      projects: 'HelloWorldApp/HelloWorldApp.csproj'
+      # The output path, $(Build.ArtifactStagingDirectory), is the temp location for Artifacts
+      arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)'
+      
+  # 4. Upload the Artifact
+  - task: PublishBuildArtifacts@1
+    displayName: '4. Upload Artifact: drop'
+    inputs:
+      pathToPublish: '$(Build.ArtifactStagingDirectory)' # Source folder
+      artifactName: 'drop' # Name of the artifact
