@@ -1,0 +1,37 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger: none
+
+pool:
+  name: Default
+  demands:
+  - Agent.Name -equals MySelfHostedAgent-ABT
+  - docker
+
+variables:
+  imageName: 'anbinhtrong/helloworld'
+
+steps:
+- checkout: self
+
+- task: PowerShell@2
+  displayName: 'Check Docker environment'
+  inputs:
+    targetType: inline
+    script: |
+      docker version
+      docker info
+
+- task: Docker@2
+  displayName: 'Build and Push image to Docker Hub'
+  inputs:
+    containerRegistry: 'dockerhub-conn'  # service connection to Docker Hub
+    repository: '$(imageName)'
+    command: 'buildAndPush'
+    Dockerfile: '**/Dockerfile'
+    tags: |
+      $(Build.SourceVersion)
+      latest
