@@ -9,6 +9,7 @@ pool:
   - Agent.Name -equals MySelfHostedAgent-ABT
 
 variables:
+  DOCKER_PULL: 'false'
   buildConfiguration: 'Release'
 
 jobs:
