@@ -9,13 +9,12 @@ pool:
   - Agent.Name -equals MySelfHostedAgent-ABT
 
 variables:
-  DOCKER_PULL: 'false'
   buildConfiguration: 'Release'
 
 jobs:
 - job: BuildDotNetAlpine
   displayName: 'Build C# Project (Debian/Ubuntu image)'
-  container: sdk9-node:alpine
+  container: anbinhtrong/sdk9-node:alpine
 
   steps:
   - script: |
