@@ -25,6 +25,7 @@ jobs:
       npm --version                             # Check NPM version
       echo "-----------------------------------"
     displayName: '0. Verify Node.js and NPM'
+    target: bash
       #apt-get update          # Update package list
       #apt-get install -y nodejs npm # Install Node.js and npm
     #displayName: '0. Install Node.js Dependencies'
@@ -32,12 +33,14 @@ jobs:
     displayName: '1. Restore Dependencies'
     # Specify the directory containing your .csproj file
     workingDirectory: 'HelloWorldApp'
+    target: bash
 
   # 2. Build the C# Application
   - script: dotnet build --configuration $(buildConfiguration) --no-restore
     displayName: '2. Build Project'
     # '--no-restore' ensures we use the packages restored in the previous step
     workingDirectory: 'HelloWorldApp'
+    target: bash
     
   # 3. Publish (Compile output files to a ready-to-deploy folder)
   - task: DotNetCoreCLI@2
