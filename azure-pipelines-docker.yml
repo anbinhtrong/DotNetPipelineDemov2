@@ -35,3 +35,24 @@ steps:
     tags: |
       $(Build.SourceVersion)
       latest
+
+- task: PowerShell@2
+  displayName: 'Docker disk usage (before)'
+  inputs:
+    targetType: inline
+    script: docker system df -v
+
+- task: PowerShell@2
+  displayName: 'Remove just-built images + prune dangling'
+  inputs:
+    targetType: inline
+    script: |
+      docker rmi "$(imageName):$(Build.SourceVersion)" -f
+      docker rmi "$(imageName):latest" -f 2>$null
+      docker image prune -f
+
+- task: PowerShell@2
+  displayName: 'Docker disk usage (after)'
+  inputs:
+    targetType: inline
+    script: docker system df -v
